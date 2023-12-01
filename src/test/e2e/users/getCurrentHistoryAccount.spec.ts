@@ -40,6 +40,7 @@ describe('get current history account example', () => {
     expect(response.body.data[0].fullname).toEqual(data[0].fullname);
     expect(response.body.data[0].supportedByCount).toBeDefined();
     expect(response.body.data[0].supportedBy).toBeDefined();
+    expect(response.body.data[0].photo).toBeDefined();
     expect(response.body.data[0].password).toBeUndefined();
   });
 
