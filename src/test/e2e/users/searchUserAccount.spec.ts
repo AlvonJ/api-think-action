@@ -3,7 +3,7 @@ import { createApp } from '../../../app.js';
 import { deleteAllUsers } from '../../../infrastructure/database/mongodb/users/utils/deleteAllUsers.js';
 import { createFakeUser } from '../../../infrastructure/database/mongodb/users/utils/createFakeUser.js';
 
-describe('delete one user example', () => {
+describe('search user account example', () => {
   let app;
 
   afterAll(async () => {
@@ -19,7 +19,7 @@ describe('delete one user example', () => {
     app = createApp();
   });
 
-  it('should be able delete one user', async () => {
+  it('should be able search user account', async () => {
     const data = await createFakeUser();
 
     const authResponse = await request(app)
@@ -28,29 +28,29 @@ describe('delete one user example', () => {
     const { token } = authResponse.body;
 
     const response = await request(app)
-      .delete(`/v1/users/${data[0]._id.toString()}`)
+      .get('/v1/users/search')
+      .query({ username: 'alvonj' })
       .set('Authorization', `Bearer ${token}`);
 
     // expect http response
-    expect(response.statusCode).toEqual(204);
+    expect(response.statusCode).toEqual(200);
+    expect(response.body.results).toBeDefined();
 
     // expect response json
-    expect(response.body).toStrictEqual({});
+    // data 1
+    expect(response.body.data[0]._id.toString()).toEqual(data[0]._id.toString());
+    expect(response.body.data[0].username).toEqual(data[0].username);
+    expect(response.body.data[0].fullname).toEqual(data[0].fullname);
+    expect(response.body.data[0].supportedByCount).toBeDefined();
+    expect(response.body.data[0].supportedBy).toBeDefined();
+    expect(response.body.data[0].password).toBeUndefined();
   });
 
-  it('should thrown error if user ID is not found', async () => {
-    const data = await createFakeUser();
+  it('should thrown Authentication Error if user is not logged in', async () => {
+    const response = await request(app).get('/v1/users/search');
 
-    const authResponse = await request(app)
-      .post(`/v1/users/login`)
-      .send({ email: data[0].email, password: '12345678' });
-    const { token } = authResponse.body;
-
-    const response = await request(app)
-      .delete(`/v1/users/${data[0]._id.toString()}`)
-      .set('Authorization', `Bearer ${token}`);
-
-    expect(response.statusCode).toEqual(404);
+    // expect http response
+    expect(response.statusCode).toEqual(401);
     expect(response.body.status).toEqual('error');
   });
 });

@@ -31,7 +31,7 @@ describe('create one complete goal example', () => {
     token = authResponse.body;
   });
 
-  it('should be able create one complete goal', async () => {
+  it('should be able create one complete goal (everyone)', async () => {
     const data = createFakePost();
 
     const response = await request(app)
@@ -58,6 +58,72 @@ describe('create one complete goal example', () => {
     expect(response.body.data.caption).toEqual('I already completed this weekly goal');
     expect(response.body.data.photo).toEqual(['linkphoto1.com']);
     expect(response.body.data.shareWith).toEqual('everyone');
+    expect(response.body.data.isComplete).toEqual(false);
+    expect(response.body.data.createdDate).toBeDefined();
+    expect(response.body.data.updatedDate).toBeNull();
+    expect(response.body.data.userInfo).toBeDefined();
+  });
+
+  it('should be able create one complete goal (private)', async () => {
+    const data = createFakePost();
+
+    const response = await request(app)
+      .post(`/v1/posts/completeGoals`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        userId: user[0]._id.toString(),
+        categoryResolutionId: data[0].categoryResolutionId.toString(),
+        weeklyGoalId: data[1]._id.toString(),
+        caption: 'I already completed this weekly goal',
+        shareWith: 'private',
+        photo: ['linkphoto1.com'],
+        isComplete: false,
+      });
+
+    expect(response.statusCode).toEqual(201);
+    expect(response.body.status).toEqual('success');
+
+    expect(response.body.data._id.toString()).toBeDefined();
+    expect(response.body.data.userId).toEqual(user[0]._id.toString());
+    expect(response.body.data.categoryResolutionId).toEqual(data[0].categoryResolutionId.toString());
+    expect(response.body.data.weeklyGoalId).toEqual(data[1]._id.toString());
+    expect(response.body.data.type).toEqual('completeGoals');
+    expect(response.body.data.caption).toEqual('I already completed this weekly goal');
+    expect(response.body.data.photo).toEqual(['linkphoto1.com']);
+    expect(response.body.data.shareWith).toEqual('private');
+    expect(response.body.data.isComplete).toEqual(false);
+    expect(response.body.data.createdDate).toBeDefined();
+    expect(response.body.data.updatedDate).toBeNull();
+    expect(response.body.data.userInfo).toBeDefined();
+  });
+
+  it('should be able create one complete goal (supporter)', async () => {
+    const data = createFakePost();
+
+    const response = await request(app)
+      .post(`/v1/posts/completeGoals`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        userId: user[0]._id.toString(),
+        categoryResolutionId: data[0].categoryResolutionId.toString(),
+        weeklyGoalId: data[1]._id.toString(),
+        caption: 'I already completed this weekly goal',
+        shareWith: 'supporter',
+        photo: ['linkphoto1.com'],
+        isComplete: false,
+      });
+
+    expect(response.statusCode).toEqual(201);
+    expect(response.body.status).toEqual('success');
+
+    expect(response.body.data._id.toString()).toBeDefined();
+    expect(response.body.data.userId).toEqual(user[0]._id.toString());
+    expect(response.body.data.categoryResolutionId).toEqual(data[0].categoryResolutionId.toString());
+    expect(response.body.data.weeklyGoalId).toEqual(data[1]._id.toString());
+    expect(response.body.data.type).toEqual('completeGoals');
+    expect(response.body.data.caption).toEqual('I already completed this weekly goal');
+    expect(response.body.data.photo).toEqual(['linkphoto1.com']);
+    expect(response.body.data.shareWith).toEqual('supporter');
     expect(response.body.data.isComplete).toEqual(false);
     expect(response.body.data.createdDate).toBeDefined();
     expect(response.body.data.updatedDate).toBeNull();

@@ -14,10 +14,12 @@ describe('UserEntity', () => {
       photo: 'photo.jpg',
       supporterCount: 10,
       supportingCount: 5,
-      notificationCount: 0,
+      notificationCount: 2,
+      requestCount: 0,
       supporter: ['2', '3'],
       supporting: ['4', '5'],
       notification: ['6', '7'],
+      request: [],
       categoryResolution: [{ id: '1', name: 'Test', resolution: 'Test Resolution', isComplete: false }],
       isPublic: true,
       isUpdating: false,
@@ -124,6 +126,14 @@ describe('UserEntity', () => {
     expect(() => userEntity.validate()).toThrow();
   });
 
+  it('should thrown an error if UserEntity request count is invalid', () => {
+    const userEntity = new UserEntity(userObject);
+
+    userEntity.requestCount = -3;
+
+    expect(() => userEntity.validate()).toThrow();
+  });
+
   it('should thrown an error if UserEntity supporter is invalid', () => {
     userObject.supporter = 123;
 
@@ -148,6 +158,14 @@ describe('UserEntity', () => {
     expect(() => userEntity.validate()).toThrow();
   });
 
+  it('should thrown an error if UserEntity request is invalid', () => {
+    userObject.request = true;
+
+    const userEntity = new UserEntity(userObject);
+
+    expect(() => userEntity.validate()).toThrow();
+  });
+
   it('should thrown an error if UserEntity category resolution is invalid', () => {
     userObject.categoryResolution = [{ id: 1, name: true, resolution: 'Test Resolution', isComplete: false }];
     let userEntity = new UserEntity(userObject);
@@ -158,6 +176,12 @@ describe('UserEntity', () => {
     expect(() => userEntity.validate()).toThrow();
 
     userObject.categoryResolution = [{ id: 1, name: 'Test', resolution: 'Test Resolution', isComplete: 'test' }];
+    userEntity = new UserEntity(userObject);
+    expect(() => userEntity.validate()).toThrow();
+
+    userObject.categoryResolution = [
+      { id: 1, name: 'Test', resolution: 'Test Resolution', isComplete: false, createdDate: 213 },
+    ];
     userEntity = new UserEntity(userObject);
     expect(() => userEntity.validate()).toThrow();
   });

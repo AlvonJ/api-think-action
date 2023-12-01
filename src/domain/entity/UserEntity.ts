@@ -3,6 +3,7 @@ interface CategoryResolutionInterface {
   name?: string;
   resolution?: string;
   isComplete?: boolean;
+  createdDate?: Date;
 }
 
 export interface UserInterface {
@@ -15,11 +16,14 @@ export interface UserInterface {
   photo?: string;
   supporterCount?: number;
   supportingCount?: number;
+  requestCount?: number;
   notificationCount?: number;
   supporter?: Array<string> | string;
   supporting?: Array<string> | string;
+  request?: Array<string> | string;
   notification?: Array<string> | string;
   categoryResolution?: Array<CategoryResolutionInterface>;
+  historyAccount?: Array<string>;
   isPublic?: boolean;
   isUpdating?: boolean;
 }
@@ -34,11 +38,14 @@ export class UserEntity {
   photo?: string;
   supporterCount?: number;
   supportingCount?: number;
+  requestCount?: number;
   notificationCount?: number;
   supporter?: Array<string> | string;
   supporting?: Array<string> | string;
+  request?: Array<string> | string;
   notification?: Array<string> | string;
   categoryResolution?: Array<CategoryResolutionInterface>;
+  historyAccount?: Array<string>;
   isPublic?: boolean;
   isUpdating?: boolean;
 
@@ -52,10 +59,13 @@ export class UserEntity {
     this.photo = user.photo;
     this.supporterCount = user.supporterCount;
     this.supportingCount = user.supportingCount;
+    this.requestCount = user.requestCount;
     this.notificationCount = user.notificationCount;
     this.supporter = user.supporter;
     this.supporting = user.supporting;
+    this.request = user.request;
     this.notification = user.notification;
+    this.historyAccount = user.historyAccount;
     this.categoryResolution = user.categoryResolution;
     this.isPublic = user.isPublic || true;
     this.isUpdating = user.isUpdating || false;
@@ -70,10 +80,13 @@ export class UserEntity {
     this.validateSupporterCount();
     this.validateSupportingCount();
     this.validateNotificationCount();
+    this.validateRequestCount();
     this.validateSupporter();
     this.validateSupporting();
+    this.validateRequest();
     this.validateNotification();
     this.validateCategoryResolution();
+    this.validateHistoryAccount();
   }
 
   private validateUsername() {
@@ -164,6 +177,20 @@ export class UserEntity {
     }
   }
 
+  private validateRequestCount() {
+    if (!this.requestCount) return;
+
+    if (typeof this.requestCount !== 'number') {
+      throw new Error('Invalid Request count. Request count must be a number', { cause: ' ValidationError' });
+    }
+
+    if (this.requestCount < 0) {
+      throw new Error('Invalid Request count. Request count must be greater than or equal 0', {
+        cause: ' ValidationError',
+      });
+    }
+  }
+
   private validateNotificationCount() {
     if (!this.notificationCount) return;
 
@@ -207,6 +234,21 @@ export class UserEntity {
     }
   }
 
+  private validateRequest() {
+    if (!this.request) return;
+
+    if (
+      !(
+        (Array.isArray(this.request) && !this.request.some(item => typeof item !== 'string')) ||
+        typeof this.request === 'string'
+      )
+    ) {
+      throw new Error('Invalid Request. Request must be an array of strings or string', {
+        cause: 'ValidationError',
+      });
+    }
+  }
+
   private validateNotification() {
     if (!this.notification) return;
 
@@ -217,6 +259,21 @@ export class UserEntity {
       )
     ) {
       throw new Error('Invalid Notification. Notification must be an array of strings or string', {
+        cause: 'ValidationError',
+      });
+    }
+  }
+
+  private validateHistoryAccount() {
+    if (!this.historyAccount) return;
+
+    if (
+      !(
+        (Array.isArray(this.historyAccount) && !this.historyAccount.some(item => typeof item !== 'string')) ||
+        typeof this.notification === 'string'
+      )
+    ) {
+      throw new Error('Invalid History Account. History Account must be an array of strings or string', {
         cause: 'ValidationError',
       });
     }
@@ -241,6 +298,12 @@ export class UserEntity {
 
       if (resolution.isComplete && typeof resolution.isComplete !== 'boolean') {
         throw new Error('Invalid Category Resolution isComplete. isComplete must be a boolean.', {
+          cause: 'ValidationError',
+        });
+      }
+
+      if (resolution.createdDate && !(resolution.createdDate instanceof Date)) {
+        throw new Error('Invalid Category Resolution cratedDate. createdDate must be a Date.', {
           cause: 'ValidationError',
         });
       }

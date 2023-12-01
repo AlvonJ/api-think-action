@@ -30,7 +30,7 @@ describe('create one resolution example', () => {
     token = authResponse.body;
   });
 
-  it('should be able create one resolution', async () => {
+  it('should be able create one resolution (everyone)', async () => {
     const response = await request(app)
       .post(`/v1/posts/resolutions`)
       .set('Authorization', `Bearer ${token}`)
@@ -53,6 +53,64 @@ describe('create one resolution example', () => {
     expect(response.body.data.caption).toEqual('I want to get Rp 30.000.000');
     expect(response.body.data.photo).toEqual(['linkphoto1.com']);
     expect(response.body.data.shareWith).toEqual('everyone');
+    expect(response.body.data.dueDate).toBeDefined();
+    expect(response.body.data.createdDate).toBeDefined();
+    expect(response.body.data.updatedDate).toBeNull();
+    expect(response.body.data.userInfo).toBeDefined();
+  });
+
+  it('should be able create one resolution (private)', async () => {
+    const response = await request(app)
+      .post(`/v1/posts/resolutions`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        userId: user[0]._id.toString(),
+        categoryName: 'Finance',
+        caption: 'I want to get Rp 30.000.000',
+        dueDate: '2024-11-26',
+        shareWith: 'private',
+        photo: ['linkphoto1.com'],
+      });
+
+    expect(response.statusCode).toEqual(201);
+    expect(response.body.status).toEqual('success');
+
+    expect(response.body.data._id.toString()).toBeDefined();
+    expect(response.body.data.userId).toEqual(user[0]._id.toString());
+    expect(response.body.data.categoryResolutionId).toBeDefined();
+    expect(response.body.data.type).toEqual('resolutions');
+    expect(response.body.data.caption).toEqual('I want to get Rp 30.000.000');
+    expect(response.body.data.photo).toEqual(['linkphoto1.com']);
+    expect(response.body.data.shareWith).toEqual('private');
+    expect(response.body.data.dueDate).toBeDefined();
+    expect(response.body.data.createdDate).toBeDefined();
+    expect(response.body.data.updatedDate).toBeNull();
+    expect(response.body.data.userInfo).toBeDefined();
+  });
+
+  it('should be able create one resolution (supporter)', async () => {
+    const response = await request(app)
+      .post(`/v1/posts/resolutions`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        userId: user[0]._id.toString(),
+        categoryName: 'Finance',
+        caption: 'I want to get Rp 30.000.000',
+        dueDate: '2024-11-26',
+        shareWith: 'supporter',
+        photo: ['linkphoto1.com'],
+      });
+
+    expect(response.statusCode).toEqual(201);
+    expect(response.body.status).toEqual('success');
+
+    expect(response.body.data._id.toString()).toBeDefined();
+    expect(response.body.data.userId).toEqual(user[0]._id.toString());
+    expect(response.body.data.categoryResolutionId).toBeDefined();
+    expect(response.body.data.type).toEqual('resolutions');
+    expect(response.body.data.caption).toEqual('I want to get Rp 30.000.000');
+    expect(response.body.data.photo).toEqual(['linkphoto1.com']);
+    expect(response.body.data.shareWith).toEqual('supporter');
     expect(response.body.data.dueDate).toBeDefined();
     expect(response.body.data.createdDate).toBeDefined();
     expect(response.body.data.updatedDate).toBeNull();
