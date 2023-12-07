@@ -2,10 +2,10 @@ import request from 'supertest';
 import { createApp } from '../../../app.js';
 import { createFakeUser } from '../../../infrastructure/database/mongodb/users/utils/createFakeUser.js';
 import { deleteAllUsers } from '../../../infrastructure/database/mongodb/users/utils/deleteAllUsers.js';
-import { createFakePost } from '../../../infrastructure/database/mongodb/posts/utils/createFakePost.js';
 import { deleteAllPosts } from '../../../infrastructure/database/mongodb/posts/utils/deleteAllPosts.js';
+import { createFakePost } from '../../../infrastructure/database/mongodb/posts/utils/createFakePost.js';
 
-describe('update like from post example', () => {
+describe('unlike post example', () => {
   let app;
   let token;
   let user;
@@ -27,43 +27,37 @@ describe('update like from post example', () => {
     user = await createFakeUser();
     const authResponse = await request(app)
       .post(`/v1/users/login`)
-      .send({ email: user[0].email, password: '12345678' });
-    token = authResponse.body;
+      .send({ email: user[1].email, password: '12345678' });
+    token = authResponse.body.token;
   });
 
-  it('should be able to update like from post', async () => {
-    const data = createFakePost();
+  it('should be to unlike post', async () => {
+    const data = await createFakePost();
 
-    const response = await request(app)
-      .patch(`/v1/posts/${data[0]._id.toString()}/like`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        like: user[0]._id.toString(),
-      });
+    const response = await request(app).post(`/v1/posts/unlike`).set('Authorization', `Bearer ${token}`).send({
+      postId: data[0]._id.toString(),
+    });
 
     expect(response.statusCode).toEqual(200);
     expect(response.body.status).toEqual('success');
-    expect(response.body.message).toBeDefined();
-
-    expect(response.body.data._id.toString()).toBeDefined();
-    expect(response.body.data.likeCount).not.toEqual(data[0].likeCount);
+    expect(response.body.data._id).toEqual(data[0]._id.toString());
+    expect(response.body.data.likeCount).toEqual(3);
   });
 
   it('should thrown error if post id is not found', async () => {
-    const response = await request(app)
-      .patch(`/v1/posts/12325320b7681b6c0b567bd5/like`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        like: user[0]._id.toString(),
-      });
+    const data = await createFakePost();
+
+    const response = await request(app).post(`/v1/posts/unlike`).set('Authorization', `Bearer ${token}`).send({
+      postId: '12325320b7681b6c0b567bd5',
+    });
 
     expect(response.statusCode).toEqual(404);
     expect(response.body.status).toEqual('error');
   });
 
   it('should thrown error if user is not logged in', async () => {
-    const response = await request(app).patch(`/v1/posts/12325320b7681b6c0b567bd5/like`).send({
-      like: user[0]._id.toString(),
+    const response = await request(app).post(`/v1/posts/unlike`).send({
+      postId: '12325320b7681b6c0b567bd5',
     });
 
     expect(response.statusCode).toEqual(401);

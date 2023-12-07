@@ -20,7 +20,7 @@ describe('delete one notification example', () => {
     const authResponse = await request(app)
       .post(`/v1/users/login`)
       .send({ email: user[0].email, password: '12345678' });
-    token = authResponse.body;
+    token = authResponse.body.token;
   });
 
   it('should be able to delete one notification', async () => {

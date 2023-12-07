@@ -29,7 +29,7 @@ describe('update one comment example', () => {
     const authResponse = await request(app)
       .post(`/v1/users/login`)
       .send({ email: user[0].email, password: '12345678' });
-    token = authResponse.body;
+    token = authResponse.body.token;
   });
 
   it('should be able to update one comment', async () => {
@@ -45,14 +45,17 @@ describe('update one comment example', () => {
     expect(response.statusCode).toEqual(200);
     expect(response.body.status).toEqual('success');
 
-    expect(response.body.data._id.toString()).toBeDefined();
+    expect(response.body.data._id.toString()).toEqual(data[0]._id.toString());
     expect(response.body.data.userId).toEqual(data[0].userId);
     expect(response.body.data.postId).toEqual(data[0].postId);
     expect(response.body.data.message).not.toEqual(data[0].message);
-    expect(response.body.data.replyCount).toEqual(data[0].replyCount);
+    expect(response.body.data.replyCount).toEqual(1);
     expect(response.body.data.createdDate).toEqual(data[0].createdDate);
-    expect(response.body.data.updatedDate).toEqual(data[0].updatedDate);
+    expect(response.body.data.updatedDate).not.toBeNull();
     expect(response.body.data.userInfo).toBeDefined();
+    expect(response.body.data.userInfo._id).toEqual(user[0]._id.toString());
+    expect(response.body.data.userInfo.username).toEqual(user[0].username);
+    expect(response.body.data.userInfo.photo).toEqual(user[0].photo);
   });
 
   it('should thrown error if comment id is not found', async () => {

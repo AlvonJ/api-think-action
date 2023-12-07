@@ -5,8 +5,6 @@ export interface PostInterface {
   type?: 'resolutions' | 'weeklyGoals' | 'completeGoals';
   caption?: string;
   photo?: Array<string>;
-  likeCount?: number;
-  commentCount?: number;
   like?: Array<string> | string;
   dueDate?: Date | string;
   updatedDate?: Date | string;
@@ -23,8 +21,6 @@ export class PostEntity {
   type: 'resolutions' | 'weeklyGoals' | 'completeGoals';
   caption: string;
   photo?: Array<string>;
-  likeCount?: number;
-  commentCount?: number;
   like?: Array<string> | string;
   dueDate?: Date | string;
   updatedDate?: Date | string;
@@ -40,8 +36,6 @@ export class PostEntity {
     this.type = post.type;
     this.caption = post.caption;
     this.photo = post.photo;
-    this.likeCount = post.likeCount;
-    this.commentCount = post.commentCount;
     this.like = post.like;
     this.dueDate = post.dueDate;
     this.updatedDate = post.updatedDate;
@@ -57,8 +51,6 @@ export class PostEntity {
     this.validateType();
     this.validateCaption();
     this.validatePhoto();
-    this.validateLikeCount();
-    this.validateCommentCount();
     this.validateLike();
     this.validateDueDate();
     this.validateUpdatedDate();
@@ -110,20 +102,6 @@ export class PostEntity {
   private validatePhoto() {
     if (this.photo && (!Array.isArray(this.photo) || this.photo.some(item => typeof item !== 'string'))) {
       throw new Error('Invalid Photo. Photo must be an array of strings.', { cause: 'ValidationError' });
-    }
-  }
-
-  private validateLikeCount() {
-    if (this.likeCount && (typeof this.likeCount !== 'number' || this.likeCount < 0)) {
-      throw new Error('Invalid Like Count. Like Count must be a non-negative number.', { cause: 'ValidationError' });
-    }
-  }
-
-  private validateCommentCount() {
-    if (this.commentCount && (typeof this.commentCount !== 'number' || this.commentCount < 0)) {
-      throw new Error('Invalid Comment Count. Comment Count must be a non-negative number.', {
-        cause: 'ValidationError',
-      });
     }
   }
 

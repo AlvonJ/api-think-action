@@ -3,8 +3,8 @@ export interface CommentInterface {
   userId?: string;
   postId?: string;
   message?: string;
-  replyCount?: number;
   reply?: Array<string> | string;
+  type?: 'comment' | 'reply';
   updatedDate?: Date;
   isUpdating?: boolean;
 }
@@ -14,8 +14,8 @@ export class CommentEntity {
   userId: string;
   postId: string;
   message: string;
-  replyCount?: number;
   reply?: Array<string> | string;
+  type?: 'comment' | 'reply';
   updatedDate?: Date;
   createdDate?: Date;
   isUpdating: boolean;
@@ -25,8 +25,8 @@ export class CommentEntity {
     this.userId = comment.userId;
     this.postId = comment.postId;
     this.message = comment.message;
-    this.replyCount = comment.replyCount;
     this.reply = comment.reply;
+    this.type = comment.type;
     this.updatedDate = comment.updatedDate;
     this.createdDate = new Date();
     this.isUpdating = comment.isUpdating || false;
@@ -36,8 +36,8 @@ export class CommentEntity {
     this.validateUserId();
     this.validatePostId();
     this.validateMessage();
-    this.validateReplyCount();
     this.validateReply();
+    this.validateType();
     this.validateUpdatedDate();
     this.validateCreatedDate();
   }
@@ -63,13 +63,13 @@ export class CommentEntity {
       throw new Error('Invalid Message. Message field must be non-empty string', { cause: 'ValidationError' });
   }
 
-  private validateReplyCount() {
-    if (this.replyCount && (typeof this.replyCount !== 'number' || this.replyCount < 0))
-      throw new Error('Invalid Reply Count. Reply Count must be a non-negative number.', {
+  private validateType() {
+    if (this.type && !(this.type.toLowerCase() === 'comment' || this.type.toLowerCase() === 'reply')) {
+      throw new Error('Invalid Type. Type must be comment or reply', {
         cause: 'ValidationError',
       });
+    }
   }
-
   private validateReply() {
     if (!this.reply) return;
 

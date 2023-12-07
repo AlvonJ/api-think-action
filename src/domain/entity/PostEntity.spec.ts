@@ -11,8 +11,6 @@ describe('PostEntity', () => {
       type: 'resolutions',
       caption: 'test caption',
       photo: ['photo1.jpg, photo2.jpg'],
-      likeCount: 2,
-      commentCount: 3,
       like: ['23, 24'],
       dueDate: '2023-11-19',
       shareWith: 'everyone',
@@ -32,8 +30,6 @@ describe('PostEntity', () => {
     expect(postEntity.type).toBe(postObject.type);
     expect(postEntity.caption).toBe(postObject.caption);
     expect(postEntity.photo).toBe(postObject.photo);
-    expect(postEntity.likeCount).toBe(postObject.likeCount);
-    expect(postEntity.commentCount).toBe(postObject.commentCount);
     expect(postEntity.like).toBe(postObject.like);
     expect(postEntity.dueDate).toBe(postObject.dueDate);
     expect(postEntity.updatedDate).toBeUndefined();
@@ -86,26 +82,6 @@ describe('PostEntity', () => {
     expect(() => postEntity.validate()).toThrow();
 
     postObject.photo = 45;
-    postEntity = new PostEntity(postObject);
-    expect(() => postEntity.validate()).toThrow();
-  });
-
-  it('should thrown an error if PostEntity like count is invalid', () => {
-    postObject.likeCount = 'asd';
-    let postEntity = new PostEntity(postObject);
-    expect(() => postEntity.validate()).toThrow();
-
-    postObject.likeCount = -5;
-    postEntity = new PostEntity(postObject);
-    expect(() => postEntity.validate()).toThrow();
-  });
-
-  it('should thrown an error if PostEntity comment count is invalid', () => {
-    postObject.commentCount = 'asd';
-    let postEntity = new PostEntity(postObject);
-    expect(() => postEntity.validate()).toThrow();
-
-    postObject.commentCount = -5;
     postEntity = new PostEntity(postObject);
     expect(() => postEntity.validate()).toThrow();
   });

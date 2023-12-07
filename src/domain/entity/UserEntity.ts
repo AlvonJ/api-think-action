@@ -14,10 +14,6 @@ export interface UserInterface {
   fullname?: string;
   bio?: string;
   photo?: string;
-  supporterCount?: number;
-  supportingCount?: number;
-  requestCount?: number;
-  notificationCount?: number;
   supporter?: Array<string> | string;
   supporting?: Array<string> | string;
   request?: Array<string> | string;
@@ -36,10 +32,6 @@ export class UserEntity {
   fullname?: string;
   bio?: string;
   photo?: string;
-  supporterCount?: number;
-  supportingCount?: number;
-  requestCount?: number;
-  notificationCount?: number;
   supporter?: Array<string> | string;
   supporting?: Array<string> | string;
   request?: Array<string> | string;
@@ -57,10 +49,6 @@ export class UserEntity {
     this.fullname = user.fullname;
     this.bio = user.bio;
     this.photo = user.photo;
-    this.supporterCount = user.supporterCount;
-    this.supportingCount = user.supportingCount;
-    this.requestCount = user.requestCount;
-    this.notificationCount = user.notificationCount;
     this.supporter = user.supporter;
     this.supporting = user.supporting;
     this.request = user.request;
@@ -77,10 +65,6 @@ export class UserEntity {
     this.validatePassword();
     this.validateFullname();
     this.validateBio();
-    this.validateSupporterCount();
-    this.validateSupportingCount();
-    this.validateNotificationCount();
-    this.validateRequestCount();
     this.validateSupporter();
     this.validateSupporting();
     this.validateRequest();
@@ -147,61 +131,6 @@ export class UserEntity {
         cause: 'ValidationError',
       });
     }
-  }
-
-  private validateSupporterCount() {
-    if (!this.supporterCount) return;
-
-    if (typeof this.supporterCount !== 'number') {
-      throw new Error('Invalid Supporter count. Supporter count must be a number', { cause: ' ValidationError' });
-    }
-
-    if (this.supporterCount < 0) {
-      throw new Error('Invalid Supporter count. Supporter count must be greater than or equal 0', {
-        cause: ' ValidationError',
-      });
-    }
-  }
-
-  private validateSupportingCount() {
-    if (!this.supportingCount) return;
-
-    if (typeof this.supportingCount !== 'number') {
-      throw new Error('Invalid Supporting count. Supporting count must be a number', { cause: ' ValidationError' });
-    }
-
-    if (this.supportingCount < 0) {
-      throw new Error('Invalid Supporting count. Supporting count must be greater than or equal 0', {
-        cause: ' ValidationError',
-      });
-    }
-  }
-
-  private validateRequestCount() {
-    if (!this.requestCount) return;
-
-    if (typeof this.requestCount !== 'number') {
-      throw new Error('Invalid Request count. Request count must be a number', { cause: ' ValidationError' });
-    }
-
-    if (this.requestCount < 0) {
-      throw new Error('Invalid Request count. Request count must be greater than or equal 0', {
-        cause: ' ValidationError',
-      });
-    }
-  }
-
-  private validateNotificationCount() {
-    if (!this.notificationCount) return;
-
-    if (typeof this.notificationCount !== 'number') {
-      throw new Error('Invalid Notification count. Notification count must be a number', { cause: ' ValidationError' });
-    }
-
-    if (this.notificationCount < 0)
-      throw new Error('Invalid Notification count. Notification count must be greater than or equal 0', {
-        cause: ' ValidationError',
-      });
   }
 
   private validateSupporter() {

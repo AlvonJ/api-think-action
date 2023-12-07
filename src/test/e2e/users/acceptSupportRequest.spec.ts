@@ -3,7 +3,7 @@ import { createApp } from '../../../app.js';
 import { deleteAllUsers } from '../../../infrastructure/database/mongodb/users/utils/deleteAllUsers.js';
 import { createFakeUser } from '../../../infrastructure/database/mongodb/users/utils/createFakeUser.js';
 
-describe('update supporting example', () => {
+describe('accept support request example', () => {
   let app;
 
   afterAll(async () => {
@@ -19,7 +19,31 @@ describe('update supporting example', () => {
     app = createApp();
   });
 
-  it('should be able to add supporting', async () => {
+  it('should be able to accept support request', async () => {
+    const data = await createFakeUser();
+
+    const authResponse = await request(app)
+      .post(`/v1/users/login`)
+      .send({ email: data[0].email, password: '12345678' });
+
+    const { token } = authResponse.body;
+
+    const response = await request(app)
+      .post('/v1/users/request/accept')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ userId: data[3]._id.toString() });
+
+    // expect http response
+    expect(response.statusCode).toEqual(200);
+    expect(response.body.status).toEqual('success');
+    expect(response.body.message).toEqual('Support request accepted successfully');
+
+    // expect response json
+    expect(response.body.data._id.toString()).toEqual(data[3]._id.toString());
+    expect(response.body.data.supportingCount).toEqual(1);
+  });
+
+  it('should thrown error if userId is not found', async () => {
     const data = await createFakeUser();
 
     const authResponse = await request(app)
@@ -28,39 +52,17 @@ describe('update supporting example', () => {
     const { token } = authResponse.body;
 
     const response = await request(app)
-      .patch(`/v1/users/${data[0]._id.toString()}/suppoprting`)
+      .post('/v1/users/request/accept')
       .set('Authorization', `Bearer ${token}`)
-      .send({ supporting: '655b1aa6d8acd1e420d13445' });
+      .send({ userId: '12325320b7681b6c0b567bd5' });
 
-    expect(response.statusCode).toEqual(200);
-    expect(response.body.message).toEqual('Supporting list updated successfully');
-    expect(response.body.status).toEqual('success');
-    expect(response.body.data.supportingCount).toEqual(data[0].supportingCount + 1);
-    expect(response.body.data.supporterCount).toBeDefined();
+    // expect http response
+    expect(response.statusCode).toEqual(404);
+    expect(response.body.status).toEqual('error');
   });
 
-  it('should be able to remove supporting', async () => {
-    const data = await createFakeUser();
-
-    const authResponse = await request(app)
-      .post(`/v1/users/login`)
-      .send({ email: data[0].email, password: '12345678' });
-    const { token } = authResponse.body;
-
-    const response = await request(app)
-      .patch(`/v1/users/${data[0]._id.toString()}/supporting`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({ supporting: data[0].supporting[0] });
-
-    expect(response.statusCode).toEqual(200);
-    expect(response.body.message).toEqual('Supporting list updated successfully');
-    expect(response.body.status).toEqual('success');
-    expect(response.body.data.supportingCount).toEqual(data[0].supportingCount - 1);
-    expect(response.body.data.supporterCount).toBeDefined();
-  });
-
-  it('should thrown error if user is not logged in', async () => {
-    const response = await request(app).patch('/v1/users/12325320b7681b6c0b567bd5/supporting');
+  it('should thrown Authentication Error if user is not logged in', async () => {
+    const response = await request(app).post('/v1/users/request/accept');
 
     // expect http response
     expect(response.statusCode).toEqual(401);

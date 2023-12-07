@@ -28,22 +28,21 @@ describe('create one weekly goal example', () => {
     const authResponse = await request(app)
       .post(`/v1/users/login`)
       .send({ email: user[0].email, password: '12345678' });
-    token = authResponse.body;
+    token = authResponse.body.token;
   });
 
-  it('should be able create one weekly goal (everyone)', async () => {
-    const data = createFakePost();
+  it('should be able create one weekly goal', async () => {
+    const data = await createFakePost();
 
     const response = await request(app)
       .post(`/v1/posts/weeklyGoals`)
       .set('Authorization', `Bearer ${token}`)
       .send({
-        userId: user[0]._id.toString(),
         categoryResolutionId: data[0].categoryResolutionId.toString(),
         caption: 'I want to get Rp 5.000.000 this week',
         dueDate: '2023-11-30',
         shareWith: 'everyone',
-        photo: ['linkphoto1.com'],
+        photo: ['linkphoto1.png'],
       });
 
     expect(response.statusCode).toEqual(201);
@@ -51,96 +50,32 @@ describe('create one weekly goal example', () => {
 
     expect(response.body.data._id.toString()).toBeDefined();
     expect(response.body.data.userId).toEqual(user[0]._id.toString());
-    expect(response.body.data.categoryResolutionId).toEqual(data[0].categoryResolutionId.toString());
+    expect(response.body.data.categoryResolutionId).toEqual(user[0].categoryResolution[0]._id.toString());
     expect(response.body.data.type).toEqual('weeklyGoals');
     expect(response.body.data.caption).toEqual('I want to get Rp 5.000.000 this week');
-    expect(response.body.data.photo).toEqual(['linkphoto1.com']);
+    expect(response.body.data.likeCount).toEqual(0);
+    expect(response.body.data.commentCount).toEqual(0);
+    expect(response.body.data.photo).toEqual(['linkphoto1.png']);
     expect(response.body.data.shareWith).toEqual('everyone');
+    expect(response.body.data.isComplete).toEqual(false);
     expect(response.body.data.dueDate).toBeDefined();
     expect(response.body.data.createdDate).toBeDefined();
     expect(response.body.data.updatedDate).toBeNull();
     expect(response.body.data.userInfo).toBeDefined();
-  });
-
-  it('should be able create one weekly goal (private)', async () => {
-    const data = createFakePost();
-
-    const response = await request(app)
-      .post(`/v1/posts/weeklyGoals`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        userId: user[0]._id.toString(),
-        categoryResolutionId: data[0].categoryResolutionId.toString(),
-        caption: 'I want to get Rp 5.000.000 this week',
-        dueDate: '2023-11-30',
-        shareWith: 'private',
-        photo: ['linkphoto1.com'],
-      });
-
-    expect(response.statusCode).toEqual(201);
-    expect(response.body.status).toEqual('success');
-
-    expect(response.body.data._id.toString()).toBeDefined();
-    expect(response.body.data.userId).toEqual(user[0]._id.toString());
-    expect(response.body.data.categoryResolutionId).toEqual(data[0].categoryResolutionId.toString());
-    expect(response.body.data.type).toEqual('weeklyGoals');
-    expect(response.body.data.caption).toEqual('I want to get Rp 5.000.000 this week');
-    expect(response.body.data.photo).toEqual(['linkphoto1.com']);
-    expect(response.body.data.shareWith).toEqual('private');
-    expect(response.body.data.dueDate).toBeDefined();
-    expect(response.body.data.createdDate).toBeDefined();
-    expect(response.body.data.updatedDate).toBeNull();
-    expect(response.body.data.userInfo).toBeDefined();
-  });
-
-  it('should be able create one weekly goal (supporter)', async () => {
-    const data = createFakePost();
-
-    const response = await request(app)
-      .post(`/v1/posts/weeklyGoals`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        userId: user[0]._id.toString(),
-        categoryResolutionId: data[0].categoryResolutionId.toString(),
-        caption: 'I want to get Rp 5.000.000 this week',
-        dueDate: '2023-11-30',
-        shareWith: 'supporter',
-        photo: ['linkphoto1.com'],
-      });
-
-    expect(response.statusCode).toEqual(201);
-    expect(response.body.status).toEqual('success');
-
-    expect(response.body.data._id.toString()).toBeDefined();
-    expect(response.body.data.userId).toEqual(user[0]._id.toString());
-    expect(response.body.data.categoryResolutionId).toEqual(data[0].categoryResolutionId.toString());
-    expect(response.body.data.type).toEqual('weeklyGoals');
-    expect(response.body.data.caption).toEqual('I want to get Rp 5.000.000 this week');
-    expect(response.body.data.photo).toEqual(['linkphoto1.com']);
-    expect(response.body.data.shareWith).toEqual('supporter');
-    expect(response.body.data.dueDate).toBeDefined();
-    expect(response.body.data.createdDate).toBeDefined();
-    expect(response.body.data.updatedDate).toBeNull();
-    expect(response.body.data.userInfo).toBeDefined();
-  });
-
-  it('should thrown error if user id is not found', async () => {
-    const data = createFakePost();
-
-    const response = await request(app)
-      .post(`/v1/posts/weeklyGoals`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        userId: user[0]._id.toString(),
-        categoryResolutionId: data[0].categoryResolutionId.toString(),
-        caption: 'I want to get Rp 5.000.000 this week',
-        dueDate: '2023-11-30',
-        shareWith: 'everyone',
-        photo: ['linkphoto1.com'],
-      });
-
-    expect(response.statusCode).toEqual(404);
-    expect(response.body.status).toEqual('error');
+    expect(response.body.data.userInfo._id).toEqual(user[0]._id.toString());
+    expect(response.body.data.userInfo.username).toEqual(user[0].username);
+    expect(response.body.data.userInfo.photo).toEqual(user[0].photo);
+    expect(response.body.data.userInfo.categoryResolution[0]._id).toEqual(user[0].categoryResolution[0]._id.toString());
+    expect(response.body.data.userInfo.categoryResolution[0].name).toEqual(user[0].categoryResolution[0].name);
+    expect(response.body.data.userInfo.categoryResolution[0].resolution).toEqual(
+      user[0].categoryResolution[0].resolution
+    );
+    expect(response.body.data.userInfo.categoryResolution[0].isComplete).toEqual(
+      user[0].categoryResolution[0].isComplete
+    );
+    expect(response.body.data.userInfo.categoryResolution[0].createdDate).toEqual(
+      user[0].categoryResolution[0].createdDate
+    );
   });
 
   it('should thrown error if category resolution id is not found', async () => {

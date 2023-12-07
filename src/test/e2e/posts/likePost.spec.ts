@@ -2,10 +2,10 @@ import request from 'supertest';
 import { createApp } from '../../../app.js';
 import { createFakeUser } from '../../../infrastructure/database/mongodb/users/utils/createFakeUser.js';
 import { deleteAllUsers } from '../../../infrastructure/database/mongodb/users/utils/deleteAllUsers.js';
-import { createFakePost } from '../../../infrastructure/database/mongodb/posts/utils/createFakePost.js';
 import { deleteAllPosts } from '../../../infrastructure/database/mongodb/posts/utils/deleteAllPosts.js';
+import { createFakePost } from '../../../infrastructure/database/mongodb/posts/utils/createFakePost.js';
 
-describe('update one complete goal example', () => {
+describe('like post example', () => {
   let app;
   let token;
   let user;
@@ -31,43 +31,34 @@ describe('update one complete goal example', () => {
     token = authResponse.body.token;
   });
 
-  it('should be able to update one complete goal', async () => {
-    const data = createFakePost();
+  it('should be to like post', async () => {
+    const data = await createFakePost();
 
-    const response = await request(app)
-      .patch(`/v1/posts/${data[2]._id.toString()}/completeGoals`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        caption: 'Updated Caption',
-        shareWith: 'private',
-      });
+    const response = await request(app).post(`/v1/posts/like`).set('Authorization', `Bearer ${token}`).send({
+      postId: data[1]._id.toString(),
+    });
 
     expect(response.statusCode).toEqual(200);
     expect(response.body.status).toEqual('success');
-
-    expect(response.body.data._id.toString()).toBeDefined();
-    expect(response.body.data.caption).not.toEqual(data[2].caption);
-    expect(response.body.data.shareWith).not.toEqual(data[2].shareWith);
-    expect(response.body.data.updatedDate).not.toBeNull();
+    expect(response.body.data._id).toEqual(data[1]._id.toString());
+    expect(response.body.data.likeCount).toEqual(1);
   });
 
-  it('should thrown error if complete goal id is not found', async () => {
-    const response = await request(app)
-      .patch(`/v1/posts/12325320b7681b6c0b567bd5/completeGoals`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        caption: 'Updated Caption',
-        shareWith: 'private',
-      });
+  it('should thrown error if post id is not found', async () => {
+    const data = await createFakePost();
+
+    const response = await request(app).post(`/v1/posts/like`).set('Authorization', `Bearer ${token}`).send({
+      postId: '12325320b7681b6c0b567bd5',
+    });
 
     expect(response.statusCode).toEqual(404);
     expect(response.body.status).toEqual('error');
   });
 
   it('should thrown error if user is not logged in', async () => {
-    const response = await request(app)
-      .patch(`/v1/posts/12325320b7681b6c0b567bd5/completeGoals`)
-      .set('Authorization', `Bearer ${token}`);
+    const response = await request(app).post(`/v1/posts/like`).send({
+      postId: '12325320b7681b6c0b567bd5',
+    });
 
     expect(response.statusCode).toEqual(401);
     expect(response.body.status).toEqual('error');

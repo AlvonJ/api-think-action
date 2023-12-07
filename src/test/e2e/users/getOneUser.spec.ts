@@ -19,7 +19,7 @@ describe('get one user example', () => {
     app = createApp();
   });
 
-  it('should be able get one user', async () => {
+  it('should be able to get current authenticated user', async () => {
     const data = await createFakeUser();
 
     const authResponse = await request(app)
@@ -40,11 +40,49 @@ describe('get one user example', () => {
     expect(response.body.data.email).toEqual(data[0].email);
     expect(response.body.data.fullname).toEqual(data[0].fullname);
     expect(response.body.data.bio).toEqual(data[0].bio);
-    expect(response.body.data.supporterCount).toEqual(data[0].supporterCount);
-    expect(response.body.data.supportingCount).toEqual(data[0].supportingCount);
     expect(response.body.data.photo).toEqual(data[0].photo);
     expect(response.body.data.isPublic).toEqual(data[0].isPublic);
     expect(response.body.data.categoryResolution).toEqual(data[0].categoryResolution);
+    expect(response.body.data.categoryResolution.length).toEqual(1);
+    expect(response.body.data.supporterCount).toEqual(2);
+    expect(response.body.data.supportingCount).toEqual(2);
+    expect(response.body.data.notificationCount).toEqual(2);
+    expect(response.body.data.requestCount).toEqual(1);
+    expect(response.body.data.goalsPerformance).toEqual(0);
+    expect(response.body.data.isAuthenticatedUser).toEqual(true);
+    expect(response.body.data.password).toBeUndefined();
+  });
+
+  it('should be able to get another user', async () => {
+    const data = await createFakeUser();
+
+    const authResponse = await request(app)
+      .post(`/v1/users/login`)
+      .send({ email: data[0].email, password: '12345678' });
+    const { token } = authResponse.body;
+
+    const response = await request(app)
+      .get(`/v1/users/${data[1]._id.toString()}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    // expect http response
+    expect(response.statusCode).toEqual(200);
+
+    // expect response json
+    expect(response.body.data._id.toString()).toEqual(data[1]._id.toString());
+    expect(response.body.data.username).toEqual(data[1].username);
+    expect(response.body.data.email).toEqual(data[1].email);
+    expect(response.body.data.fullname).toEqual(data[1].fullname);
+    expect(response.body.data.bio).toEqual(data[1].bio);
+    expect(response.body.data.photo).toEqual(data[1].photo);
+    expect(response.body.data.isPublic).toEqual(data[1].isPublic);
+    expect(response.body.data.categoryResolution).toEqual(data[1].categoryResolution);
+    expect(response.body.data.categoryResolution.length).toEqual(1);
+    expect(response.body.data.supporterCount).toEqual(2);
+    expect(response.body.data.supportingCount).toEqual(1);
+    expect(response.body.data.goalsPerformance).toEqual(0);
+    expect(response.body.data.isSupporting).toEqual(true);
+    expect(response.body.data.isAuthenticatedUser).toEqual(false);
     expect(response.body.data.password).toBeUndefined();
   });
 

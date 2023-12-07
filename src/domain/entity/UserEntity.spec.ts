@@ -12,10 +12,6 @@ describe('UserEntity', () => {
       fullname: 'Test User',
       bio: 'This is a test user',
       photo: 'photo.jpg',
-      supporterCount: 10,
-      supportingCount: 5,
-      notificationCount: 2,
-      requestCount: 0,
       supporter: ['2', '3'],
       supporting: ['4', '5'],
       notification: ['6', '7'],
@@ -39,9 +35,6 @@ describe('UserEntity', () => {
     expect(userEntity.fullname).toBe(userObject.fullname);
     expect(userEntity.bio).toBe(userObject.bio);
     expect(userEntity.photo).toBe(userObject.photo);
-    expect(userEntity.supporterCount).toBe(userObject.supporterCount);
-    expect(userEntity.supportingCount).toBe(userObject.supportingCount);
-    expect(userEntity.notificationCount).toBe(userObject.notificationCount);
     expect(userEntity.supporter).toBe(userObject.supporter);
     expect(userEntity.supporting).toBe(userObject.supporting);
     expect(userEntity.notification).toBe(userObject.notification);
@@ -98,38 +91,6 @@ describe('UserEntity', () => {
 
     userEntity.bio =
       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-
-    expect(() => userEntity.validate()).toThrow();
-  });
-
-  it('should thrown an error if UserEntity supporter count is invalid', () => {
-    const userEntity = new UserEntity(userObject);
-
-    userEntity.supporterCount = -5;
-
-    expect(() => userEntity.validate()).toThrow();
-  });
-
-  it('should thrown an error if UserEntity supporting count is invalid', () => {
-    const userEntity = new UserEntity(userObject);
-
-    userEntity.supportingCount = -3;
-
-    expect(() => userEntity.validate()).toThrow();
-  });
-
-  it('should thrown an error if UserEntity notification count is invalid', () => {
-    const userEntity = new UserEntity(userObject);
-
-    userEntity.notificationCount = -3;
-
-    expect(() => userEntity.validate()).toThrow();
-  });
-
-  it('should thrown an error if UserEntity request count is invalid', () => {
-    const userEntity = new UserEntity(userObject);
-
-    userEntity.requestCount = -3;
 
     expect(() => userEntity.validate()).toThrow();
   });

@@ -4,6 +4,7 @@ import { deleteAllComments } from '../../../infrastructure/database/mongodb/comm
 import { createFakeUser } from '../../../infrastructure/database/mongodb/users/utils/createFakeUser.js';
 import { deleteAllUsers } from '../../../infrastructure/database/mongodb/users/utils/deleteAllUsers.js';
 import { createFakePost } from '../../../infrastructure/database/mongodb/posts/utils/createFakePost.js';
+import { deleteAllPosts } from '../../../infrastructure/database/mongodb/posts/utils/deleteAllPosts.js';
 
 describe('create one comment example', () => {
   let app;
@@ -15,6 +16,7 @@ describe('create one comment example', () => {
     jest.setTimeout(20000);
     await deleteAllComments();
     await deleteAllUsers();
+    await deleteAllPosts();
   });
 
   beforeEach(async () => {
@@ -30,12 +32,11 @@ describe('create one comment example', () => {
     const authResponse = await request(app)
       .post(`/v1/users/login`)
       .send({ email: user[0].email, password: '12345678' });
-    token = authResponse.body;
+    token = authResponse.body.token;
   });
 
   it('should be able create one comment', async () => {
     const response = await request(app).post(`/v1/comments`).set('Authorization', `Bearer ${token}`).send({
-      userId: user[0]._id.toString(),
       postId: post[0]._id.toString(),
       message: 'This is new comment!',
     });
@@ -47,26 +48,18 @@ describe('create one comment example', () => {
     expect(response.body.data.userId).toEqual(user[0]._id.toString());
     expect(response.body.data.postId).toEqual(post[0]._id.toString());
     expect(response.body.data.message).toEqual('This is new comment!');
+    expect(response.body.data.type).toEqual('comment');
     expect(response.body.data.replyCount).toEqual(0);
     expect(response.body.data.createdDate).toBeDefined();
     expect(response.body.data.updatedDate).toBeNull();
     expect(response.body.data.userInfo).toBeDefined();
-  });
-
-  it('should thrown error if user id is not found', async () => {
-    const response = await request(app).post(`/v1/comments`).set('Authorization', `Bearer ${token}`).send({
-      userId: '12325320b7681b6c0b567bd5',
-      postId: post[0]._id.toString(),
-      message: 'This is new comment!',
-    });
-
-    expect(response.statusCode).toEqual(404);
-    expect(response.body.status).toEqual('error');
+    expect(response.body.data.userInfo._id.toString()).toEqual(user[0]._id.toString());
+    expect(response.body.data.userInfo.username).toEqual(user[0].username);
+    expect(response.body.data.userInfo.photo).toEqual(user[0].photo);
   });
 
   it('should thrown error if post id is not found', async () => {
     const response = await request(app).post(`/v1/comments`).set('Authorization', `Bearer ${token}`).send({
-      userId: user[0]._id.toString(),
       postId: '12325320b7681b6c0b567bd5',
       message: 'This is new comment!',
     });

@@ -9,7 +9,7 @@ describe('CommentEntity', () => {
       userId: '2',
       postId: '3',
       message: 'This is comment',
-      replyCount: 2,
+      type: 'comment',
       reply: ['123'],
     };
   });
@@ -25,7 +25,6 @@ describe('CommentEntity', () => {
     expect(commentEntity.userId).toBe(commentObject.userId);
     expect(commentEntity.postId).toBe(commentObject.postId);
     expect(commentEntity.message).toBe(commentObject.message);
-    expect(commentEntity.replyCount).toBe(commentObject.replyCount);
     expect(commentEntity.reply).toBe(commentObject.reply);
     expect(commentEntity.createdDate).toBeDefined();
     expect(commentEntity.updatedDate).toBeUndefined();
@@ -61,12 +60,12 @@ describe('CommentEntity', () => {
     expect(() => commentObject.validate()).toThrow();
   });
 
-  it('should thrown an error if CommentEntity reply count is invalid', () => {
-    commentObject.replyCount = -20;
+  it('should thrown an error if CommentEntity type is invalid', () => {
+    commentObject.type = 'hehehe';
     let commentEntity = new CommentEntity(commentObject);
     expect(() => commentEntity.validate()).toThrow();
 
-    commentObject.replyCount = 'abc';
+    commentObject.type = '';
     commentEntity = new CommentEntity(commentObject);
     expect(() => commentObject.validate()).toThrow();
   });

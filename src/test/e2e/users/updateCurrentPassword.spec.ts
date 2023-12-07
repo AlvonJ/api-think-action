@@ -3,7 +3,7 @@ import { createApp } from '../../../app.js';
 import { deleteAllUsers } from '../../../infrastructure/database/mongodb/users/utils/deleteAllUsers.js';
 import { createFakeUser } from '../../../infrastructure/database/mongodb/users/utils/createFakeUser.js';
 
-describe('update current password example', () => {
+describe('update current user password example', () => {
   let app;
 
   afterAll(async () => {
@@ -19,7 +19,7 @@ describe('update current password example', () => {
     app = createApp();
   });
 
-  it('should be able to update user password', async () => {
+  it('should be able to update current user password', async () => {
     const user = await createFakeUser();
 
     const loginResponse = await request(app)
