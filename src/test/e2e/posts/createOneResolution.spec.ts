@@ -75,6 +75,129 @@ describe('create one resolution example', () => {
     );
   });
 
+  it('should thrown error if user create same categoryName', async () => {
+    const response = await request(app)
+      .post(`/v1/posts/resolutions`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        categoryName: 'Fitness',
+        caption: 'I want to get Rp 30.000.000',
+        dueDate: '2024-11-26',
+        shareWith: 'everyone',
+        photo: ['linkphoto1.png'],
+      });
+
+    expect(response.statusCode).toEqual(201);
+    expect(response.body.status).toEqual('success');
+
+    const response2 = await request(app)
+      .post(`/v1/posts/resolutions`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        categoryName: 'Fitness',
+        caption: 'I want to get Rp 30.000.000',
+        dueDate: '2024-11-26',
+        shareWith: 'everyone',
+        photo: ['linkphoto1.png'],
+      });
+
+    expect(response2.statusCode).toEqual(400);
+    expect(response2.body.status).toEqual('error');
+  });
+
+  it('should thrown error if user create more than 7 resolutions', async () => {
+    await request(app)
+      .post(`/v1/posts/resolutions`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        categoryName: 'Fitness',
+        caption: 'I want to get Rp 30.000.000',
+        dueDate: '2024-11-26',
+        shareWith: 'everyone',
+        photo: ['linkphoto1.png'],
+      });
+
+    await request(app)
+      .post(`/v1/posts/resolutions`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        categoryName: 'Test1',
+        caption: 'I want to get Rp 30.000.000',
+        dueDate: '2024-11-26',
+        shareWith: 'everyone',
+        photo: ['linkphoto1.png'],
+      });
+
+    await request(app)
+      .post(`/v1/posts/resolutions`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        categoryName: 'Test2',
+        caption: 'I want to get Rp 30.000.000',
+        dueDate: '2024-11-26',
+        shareWith: 'everyone',
+        photo: ['linkphoto1.png'],
+      });
+
+    await request(app)
+      .post(`/v1/posts/resolutions`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        categoryName: 'Test3',
+        caption: 'I want to get Rp 30.000.000',
+        dueDate: '2024-11-26',
+        shareWith: 'everyone',
+        photo: ['linkphoto1.png'],
+      });
+
+    await request(app)
+      .post(`/v1/posts/resolutions`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        categoryName: 'Test4',
+        caption: 'I want to get Rp 30.000.000',
+        dueDate: '2024-11-26',
+        shareWith: 'everyone',
+        photo: ['linkphoto1.png'],
+      });
+
+    await request(app)
+      .post(`/v1/posts/resolutions`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        categoryName: 'Test5',
+        caption: 'I want to get Rp 30.000.000',
+        dueDate: '2024-11-26',
+        shareWith: 'everyone',
+        photo: ['linkphoto1.png'],
+      });
+
+    await request(app)
+      .post(`/v1/posts/resolutions`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        categoryName: 'Test6',
+        caption: 'I want to get Rp 30.000.000',
+        dueDate: '2024-11-26',
+        shareWith: 'everyone',
+        photo: ['linkphoto1.png'],
+      });
+
+    const response = await request(app)
+      .post(`/v1/posts/resolutions`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        categoryName: 'Test7',
+        caption: 'I want to get Rp 30.000.000',
+        dueDate: '2024-11-26',
+        shareWith: 'everyone',
+        photo: ['linkphoto1.png'],
+      });
+
+    expect(response.statusCode).toEqual(400);
+    expect(response.body.status).toEqual('error');
+  });
+
   it('should thrown error if user is not logged in', async () => {
     const response = await request(app)
       .post('/v1/posts/resolutions')

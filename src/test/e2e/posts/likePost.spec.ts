@@ -4,6 +4,8 @@ import { createFakeUser } from '../../../infrastructure/database/mongodb/users/u
 import { deleteAllUsers } from '../../../infrastructure/database/mongodb/users/utils/deleteAllUsers.js';
 import { deleteAllPosts } from '../../../infrastructure/database/mongodb/posts/utils/deleteAllPosts.js';
 import { createFakePost } from '../../../infrastructure/database/mongodb/posts/utils/createFakePost.js';
+import { createFakeNotification } from '../../../infrastructure/database/mongodb/notifications/utils/createFakeNotification.js';
+import { deleteAllNotifications } from '../../../infrastructure/database/mongodb/notifications/utils/deleteAllNotifications.js';
 
 describe('like post example', () => {
   let app;
@@ -14,6 +16,7 @@ describe('like post example', () => {
     jest.setTimeout(20000);
     await deleteAllPosts();
     await deleteAllUsers();
+    await deleteAllNotifications();
   });
 
   beforeEach(async () => {
@@ -25,9 +28,10 @@ describe('like post example', () => {
     app = createApp();
 
     user = await createFakeUser();
+    await createFakeNotification();
     const authResponse = await request(app)
       .post(`/v1/users/login`)
-      .send({ email: user[0].email, password: '12345678' });
+      .send({ email: user[1].email, password: '12345678' });
     token = authResponse.body.token;
   });
 
@@ -42,6 +46,15 @@ describe('like post example', () => {
     expect(response.body.status).toEqual('success');
     expect(response.body.data._id).toEqual(data[1]._id.toString());
     expect(response.body.data.likeCount).toEqual(1);
+
+    // Get notification
+    const response2 = await request(app).get(`/v1/users/notification`).set('Authorization', `Bearer ${token}`);
+    expect(response2.statusCode).toEqual(200);
+    expect(response2.body.notificationCount).toEqual(2);
+    expect(response2.body.data.today.length).toEqual(2);
+    expect(response2.body.data.today[0]._id).toBeDefined();
+    expect(response2.body.data.today[0].type).toEqual('message');
+    expect(response2.body.data.today[0].message).toEqual(`${user[1].username} liked your post`);
   });
 
   it('should thrown error if post id is not found', async () => {
