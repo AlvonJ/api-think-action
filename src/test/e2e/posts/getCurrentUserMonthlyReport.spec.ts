@@ -70,7 +70,7 @@ describe('get current user monthly report example', () => {
 
     const response = await request(app)
       .get(`/v1/posts/monthly`)
-      .query({ month: new Date().getMonth() })
+      .query({ month: new Date().getMonth(), year: new Date().getFullYear() })
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.statusCode).toEqual(200);
