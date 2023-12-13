@@ -85,6 +85,56 @@ describe('create one complete goal example', () => {
     expect(response2.body.data.isComplete).toEqual(true);
   });
 
+  it('should thrown error if user with private account create complete goal with public shareWith', async () => {
+    const authResponse = await request(app)
+      .post(`/v1/users/login`)
+      .send({ email: user[4].email, password: '12345678' });
+    const token = authResponse.body.token;
+
+    const response = await request(app)
+      .post(`/v1/posts/resolutions`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        categoryName: 'Fitness',
+        caption: 'I want to get Rp 30.000.000',
+        dueDate: '2024-11-26',
+        shareWith: 'private',
+        photo: ['linkphoto1.png'],
+      });
+
+    expect(response.statusCode).toEqual(200);
+    expect(response.body.status).toEqual('success');
+
+    const response2 = await request(app)
+      .post(`/v1/posts/weeklyGoals`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        categoryResolutionId: response.body.data.categoryResolutionId.toString(),
+        caption: 'I want to get Rp 5.000.000 this week',
+        dueDate: '2023-11-30',
+        shareWith: 'private',
+        photo: ['linkphoto1.png'],
+      });
+
+    expect(response2.statusCode).toEqual(200);
+    expect(response2.body.status).toEqual('success');
+
+    const response3 = await request(app)
+      .post(`/v1/posts/completeGoals`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        categoryResolutionId: response.body.data.categoryResolutionId.toString(),
+        weeklyGoalId: response2.body.data._id.toString(),
+        caption: 'I already completed this weekly goal',
+        shareWith: 'everyone',
+        photo: ['linkphoto1.png'],
+        isComplete: false,
+      });
+
+    expect(response3.statusCode).toEqual(400);
+    expect(response3.body.status).toEqual('error');
+  });
+
   it('should thrown error if category resolution id is not found', async () => {
     const data = createFakePost();
 
@@ -92,7 +142,6 @@ describe('create one complete goal example', () => {
       .post(`/v1/posts/completeGoals`)
       .set('Authorization', `Bearer ${token}`)
       .send({
-        userId: user[0]._id.toString(),
         categoryResolutionId: '12325320b7681b6c0b567bd5',
         weeklyGoalId: data[1]._id.toString(),
         caption: 'I already completed this weekly goal',
@@ -112,7 +161,6 @@ describe('create one complete goal example', () => {
       .post(`/v1/posts/completeGoals`)
       .set('Authorization', `Bearer ${token}`)
       .send({
-        userId: user[0]._id.toString(),
         categoryResolutionId: data[0].categoryResolutionId.toString(),
         weeklyGoalId: '12325320b7681b6c0b567bd5',
         caption: 'I already completed this weekly goal',

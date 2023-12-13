@@ -40,6 +40,19 @@ describe('support another user account example', () => {
     // expect response json
     expect(response.body.data._id.toString()).toEqual(data[3]._id.toString());
     expect(response.body.data.supporterCount).toEqual(1);
+
+    // Check notification
+    const authResponse2 = await request(app)
+      .post(`/v1/users/login`)
+      .send({ email: data[0].email, password: '12345678' });
+    const token2 = authResponse2.body.token;
+
+    const response2 = await request(app).get(`/v1/users/notification`).set('Authorization', `Bearer ${token2}`);
+    expect(response2.statusCode).toEqual(200);
+    expect(response2.body.notificationCount).toEqual(1);
+    expect(response2.body.data.today[0]._id).toBeDefined();
+    expect(response2.body.data.today[0].type).toEqual('message');
+    expect(response2.body.data.today[0].message).toEqual(`${data[0].username} has supported you`);
   });
 
   it('should be able to send request support to private user account', async () => {
@@ -53,7 +66,7 @@ describe('support another user account example', () => {
     const response = await request(app)
       .post('/v1/users/support')
       .set('Authorization', `Bearer ${token}`)
-      .send({ userId: data[1]._id.toString() });
+      .send({ userId: data[4]._id.toString() });
 
     // expect http response
     expect(response.statusCode).toEqual(200);
@@ -62,6 +75,20 @@ describe('support another user account example', () => {
 
     // expect response json
     expect(response.body.data._id.toString()).toEqual(data[1]._id.toString());
+
+    // Check notification
+    const authResponse2 = await request(app)
+      .post(`/v1/users/login`)
+      .send({ email: data[4].email, password: '12345678' });
+    const token2 = authResponse2.body.token;
+
+    const response2 = await request(app).get(`/v1/users/notification`).set('Authorization', `Bearer ${token2}`);
+    expect(response2.statusCode).toEqual(200);
+    expect(response2.body.notificationCount).toEqual(1);
+    expect(response2.body.data.today[0]._id).toBeDefined();
+    expect(response2.body.data.today[0].type).toEqual('request');
+    expect(response2.body.data.today[0].message).toEqual(`${data[4].username} wants to support you`);
+    expect(response2.body.data.today[0].status).toEqual(`pending`);
   });
 
   it('should thrown error if userId is not found', async () => {

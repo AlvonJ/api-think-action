@@ -47,11 +47,15 @@ describe('like post example', () => {
     expect(response.body.data._id).toEqual(data[1]._id.toString());
     expect(response.body.data.likeCount).toEqual(1);
 
-    // Get notification
-    const response2 = await request(app).get(`/v1/users/notification`).set('Authorization', `Bearer ${token}`);
+    // Check notification
+    const authResponse = await request(app)
+      .post(`/v1/users/login`)
+      .send({ email: user[0].email, password: '12345678' });
+    const token2 = authResponse.body.token;
+
+    const response2 = await request(app).get(`/v1/users/notification`).set('Authorization', `Bearer ${token2}`);
     expect(response2.statusCode).toEqual(200);
-    expect(response2.body.notificationCount).toEqual(2);
-    expect(response2.body.data.today.length).toEqual(2);
+    expect(response2.body.notificationCount).toEqual(3);
     expect(response2.body.data.today[0]._id).toBeDefined();
     expect(response2.body.data.today[0].type).toEqual('message');
     expect(response2.body.data.today[0].message).toEqual(`${user[1].username} liked your post`);

@@ -76,5 +76,20 @@ export async function createFakeUser() {
       historyAccount: [],
       isPublic: true,
     },
+    {
+      _id: '65794ff2991e9b54f114eaf5',
+      fullname: 'User 4',
+      username: 'user4',
+      email: 'user4@gmail.com',
+      bio: 'Bio User 4',
+      photo: 'user4.png',
+      supporter: [],
+      supporting: [],
+      request: [],
+      notification: [],
+      categoryResolution: [],
+      historyAccount: [],
+      isPublic: false,
+    },
   ];
 }
