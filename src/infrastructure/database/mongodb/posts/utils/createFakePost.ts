@@ -44,7 +44,7 @@ export async function createFakePost() {
       dueDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
       createdDate: new Date(new Date(new Date().setDate(new Date().getDate() + 2))),
       updatedDate: null,
-      shareWith: 'supporter',
+      shareWith: 'everyone',
       isComplete: false,
     },
     {

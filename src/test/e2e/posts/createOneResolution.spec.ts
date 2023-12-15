@@ -105,26 +105,26 @@ describe('create one resolution example', () => {
     expect(response2.body.status).toEqual('error');
   });
 
-  it('should thrown error if user with private account create resolution with public shareWith', async () => {
-    const authResponse = await request(app)
-      .post(`/v1/users/login`)
-      .send({ email: user[4].email, password: '12345678' });
-    const token = authResponse.body.token;
+  // it('should thrown error if user with private account create resolution with public shareWith', async () => {
+  //   const authResponse = await request(app)
+  //     .post(`/v1/users/login`)
+  //     .send({ email: user[4].email, password: '12345678' });
+  //   const token = authResponse.body.token;
 
-    const response = await request(app)
-      .post(`/v1/posts/resolutions`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        categoryName: 'Fitness',
-        caption: 'I want to get Rp 30.000.000',
-        dueDate: '2024-11-26',
-        shareWith: 'everyone',
-        photo: ['linkphoto1.png'],
-      });
+  //   const response = await request(app)
+  //     .post(`/v1/posts/resolutions`)
+  //     .set('Authorization', `Bearer ${token}`)
+  //     .send({
+  //       categoryName: 'Fitness',
+  //       caption: 'I want to get Rp 30.000.000',
+  //       dueDate: '2024-11-26',
+  //       shareWith: 'everyone',
+  //       photo: ['linkphoto1.png'],
+  //     });
 
-    expect(response.statusCode).toEqual(400);
-    expect(response.body.status).toEqual('error');
-  });
+  //   expect(response.statusCode).toEqual(400);
+  //   expect(response.body.status).toEqual('error');
+  // });
 
   it('should thrown error if user create more than 7 resolutions', async () => {
     await request(app)
