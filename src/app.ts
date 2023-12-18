@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import compression from 'compression';
 import { AppError } from './adapter/utils/AppError.js';
+import { userRouter } from './adapter/route/userRouter.js';
 
 export function createApp() {
   const app: Express = express();
@@ -12,6 +13,9 @@ export function createApp() {
   app.use(compression());
   app.use(cookieParser());
   app.use(express.json());
+
+  // Routers
+  app.use('/v1/users', userRouter);
 
   // Catch unhandled routes (MIDDLEWARE)
   app.all('*', function (req: Request, res: Response, next: NextFunction) {

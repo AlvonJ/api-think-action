@@ -8,9 +8,9 @@
     "start": "npm run build && node dist/index.js",
     "build": "tsc",
     "dev": "nodemon",
-    "test": "npm run build && jest dist --runInBand",
-    "test:dev": "jest --runInBand",
-    "test:coverage": "npm run build && rimraf coverage && jest dist --coverage --runInBand --collectCoverageFrom=dist/**/*"
+    "test": "npm run build && jest dist --runInBand  --detectOpenHandles",
+    "test:dev": "jest --runInBand --detectOpenHandles",
+    "test:coverage": "npm run build && rimraf coverage && jest dist --coverage --runInBand  --detectOpenHandles --collectCoverageFrom=dist/**/*"
   },
   "jest": {
     "transform": {
@@ -28,8 +28,11 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "gridfs-stream": "^1.1.1",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.1.0"
+    "mongodb": "^6.1.0",
+    "multer": "^1.4.4",
+    "multer-gridfs-storage": "^5.0.2"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.23.2",
@@ -42,6 +45,7 @@
     "@types/cookie-parser": "^1.4.5",
     "@types/cors": "^2.8.15",
     "@types/express": "^4.17.19",
+    "@types/gridfs-stream": "^0.5.39",
     "@types/jest": "^29.5.6",
     "@types/jsonwebtoken": "^9.0.4",
     "@types/node": "^20.8.6",

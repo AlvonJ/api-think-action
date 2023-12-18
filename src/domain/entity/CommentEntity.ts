@@ -4,6 +4,7 @@ export interface CommentInterface {
   postId?: string;
   message?: string;
   reply?: Array<string> | string;
+  replyCount: number;
   type?: 'comment' | 'reply';
   updatedDate?: Date;
   isUpdating?: boolean;
@@ -15,6 +16,7 @@ export class CommentEntity {
   postId: string;
   message: string;
   reply?: Array<string> | string;
+  replyCount: number;
   type?: 'comment' | 'reply';
   updatedDate?: Date;
   createdDate?: Date;
@@ -26,6 +28,7 @@ export class CommentEntity {
     this.postId = comment.postId;
     this.message = comment.message;
     this.reply = comment.reply;
+    this.replyCount = comment.replyCount;
     this.type = comment.type;
     this.updatedDate = comment.updatedDate;
     this.createdDate = new Date();

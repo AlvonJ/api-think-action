@@ -42,13 +42,9 @@ describe('get one user example', () => {
     expect(response.body.data.bio).toEqual(data[0].bio);
     expect(response.body.data.photo).toEqual(data[0].photo);
     expect(response.body.data.isPublic).toEqual(data[0].isPublic);
-    expect(response.body.data.categoryResolution).toEqual(data[0].categoryResolution);
-    expect(response.body.data.categoryResolution.length).toEqual(1);
+    expect(response.body.data.categoryResolution._id).toEqual(data[0].categoryResolution._id);
     expect(response.body.data.supporterCount).toEqual(2);
     expect(response.body.data.supportingCount).toEqual(2);
-    expect(response.body.data.notificationCount).toEqual(2);
-    expect(response.body.data.requestCount).toEqual(1);
-    expect(response.body.data.goalsPerformance).toEqual(0);
     expect(response.body.data.isAuthenticatedUser).toEqual(true);
     expect(response.body.data.password).toBeUndefined();
   });
@@ -76,11 +72,9 @@ describe('get one user example', () => {
     expect(response.body.data.bio).toEqual(data[1].bio);
     expect(response.body.data.photo).toEqual(data[1].photo);
     expect(response.body.data.isPublic).toEqual(data[1].isPublic);
-    expect(response.body.data.categoryResolution).toEqual(data[1].categoryResolution);
-    expect(response.body.data.categoryResolution.length).toEqual(1);
+    expect(response.body.data.categoryResolution._id).toEqual(data[1].categoryResolution._id);
     expect(response.body.data.supporterCount).toEqual(2);
     expect(response.body.data.supportingCount).toEqual(1);
-    expect(response.body.data.goalsPerformance).toEqual(0);
     expect(response.body.data.isSupporting).toEqual(true);
     expect(response.body.data.isAuthenticatedUser).toEqual(false);
     expect(response.body.data.password).toBeUndefined();

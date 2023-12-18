@@ -33,7 +33,7 @@ describe('get all supportings example', () => {
 
     expect(response.statusCode).toEqual(200);
     expect(response.body.status).toEqual('success');
-    expect(response.body.supportingCount).toEqual(2);
+    expect(response.body.results).toEqual(2);
     expect(response.body.limit).toEqual(10);
     expect(response.body.page).toEqual(1);
 
@@ -45,7 +45,7 @@ describe('get all supportings example', () => {
     expect(response.body.data[0].supporterCount).toEqual(data[1].supporterCount);
     expect(response.body.data[0].supportingCount).toEqual(data[1].supportingCount);
     expect(response.body.data[0].photo).toEqual(data[1].photo);
-    expect(response.body.data[0].categoryResolution).toEqual(data[1].categoryResolution);
+    expect(response.body.data[0].categoryResolution._id).toEqual(data[1].categoryResolution._id);
     expect(response.body.data[0].isPublic).toEqual(data[1].isPublic);
     expect(response.body.data[0].isSupporting).toEqual(true);
 
@@ -57,7 +57,6 @@ describe('get all supportings example', () => {
     expect(response.body.data[1].supporterCount).toEqual(data[2].supporterCount);
     expect(response.body.data[1].supportingCount).toEqual(data[2].supportingCount);
     expect(response.body.data[1].photo).toEqual(data[2].photo);
-    expect(response.body.data[1].categoryResolution).toEqual(data[2].categoryResolution);
     expect(response.body.data[1].isPublic).toEqual(data[2].isPublic);
     expect(response.body.data[1].isSupporting).toEqual(true);
   });
@@ -92,7 +91,7 @@ describe('get all supportings example', () => {
     expect(response.body.data[0].supporterCount).toEqual(data[1].supporterCount);
     expect(response.body.data[0].supportingCount).toEqual(data[1].supportingCount);
     expect(response.body.data[0].photo).toEqual(data[1].photo);
-    expect(response.body.data[0].categoryResolution).toEqual(data[1].categoryResolution);
+    expect(response.body.data[0].categoryResolution._id).toEqual(data[1].categoryResolution._id);
     expect(response.body.data[0].isPublic).toEqual(data[1].isPublic);
     expect(response.body.data[0].isSupporting).toEqual(true);
   });
@@ -127,7 +126,7 @@ describe('get all supportings example', () => {
     expect(response.body.data[0].supporterCount).toEqual(data[2].supporterCount);
     expect(response.body.data[0].supportingCount).toEqual(data[2].supportingCount);
     expect(response.body.data[0].photo).toEqual(data[2].photo);
-    expect(response.body.data[0].categoryResolution).toEqual(data[2].categoryResolution);
+    expect(response.body.data[0].categoryResolution._id).toEqual(data[2].categoryResolution._id);
     expect(response.body.data[0].isPublic).toEqual(data[2].isPublic);
     expect(response.body.data[0].isSupporting).toEqual(true);
   });

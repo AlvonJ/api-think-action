@@ -37,7 +37,7 @@ describe('login example', () => {
     expect(response.body.data.user.supporterCount).toEqual(user[0].supporterCount);
     expect(response.body.data.user.supportingCount).toEqual(user[0].supportingCount);
     expect(response.body.data.user.photo).toEqual(user[0].photo);
-    expect(response.body.data.user.categoryResolution).toEqual(user[0].categoryResolution);
+    expect(response.body.data.user.categoryResolution._id).toEqual(user[0].categoryResolution._id);
     expect(response.body.data.user.isPublic).toEqual(user[0].isPublic);
     expect(response.body.data.user.password).toBeUndefined();
   });

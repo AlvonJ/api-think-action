@@ -16,6 +16,10 @@ describe('UserEntity', () => {
       supporting: ['4', '5'],
       notification: ['6', '7'],
       request: [],
+      supporterCount: 2,
+      supportingCount: 2,
+      notificationCount: 2,
+      requestCount: 0,
       categoryResolution: [{ id: '1', name: 'Test', resolution: 'Test Resolution', isComplete: false }],
       isPublic: true,
       isUpdating: false,
@@ -124,6 +128,46 @@ describe('UserEntity', () => {
 
     const userEntity = new UserEntity(userObject);
 
+    expect(() => userEntity.validate()).toThrow();
+  });
+
+  it('should thrown an error if UserEntity supporter count is invalid', () => {
+    userObject.supporterCount = 'hehe';
+    let userEntity = new UserEntity(userObject);
+    expect(() => userEntity.validate()).toThrow();
+
+    userObject.supporterCount = -2;
+    userEntity = new UserEntity(userObject);
+    expect(() => userEntity.validate()).toThrow();
+  });
+
+  it('should thrown an error if UserEntity supporting count is invalid', () => {
+    userObject.supportingCount = 'hehe';
+    let userEntity = new UserEntity(userObject);
+    expect(() => userEntity.validate()).toThrow();
+
+    userObject.supportingCount = -2;
+    userEntity = new UserEntity(userObject);
+    expect(() => userEntity.validate()).toThrow();
+  });
+
+  it('should thrown an error if UserEntity request count is invalid', () => {
+    userObject.requestCount = 'hehe';
+    let userEntity = new UserEntity(userObject);
+    expect(() => userEntity.validate()).toThrow();
+
+    userObject.requestCount = -2;
+    userEntity = new UserEntity(userObject);
+    expect(() => userEntity.validate()).toThrow();
+  });
+
+  it('should thrown an error if UserEntity notification count is invalid', () => {
+    userObject.notificationCount = 'hehe';
+    let userEntity = new UserEntity(userObject);
+    expect(() => userEntity.validate()).toThrow();
+
+    userObject.notificationCount = -2;
+    userEntity = new UserEntity(userObject);
     expect(() => userEntity.validate()).toThrow();
   });
 

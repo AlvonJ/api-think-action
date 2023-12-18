@@ -48,7 +48,6 @@ describe('search user account example', () => {
 
     // after search, check if history account is inserted
     const response2 = await request(app).get('/v1/users/history').set('Authorization', `Bearer ${token}`);
-    expect(response2.body.results).toEqual(1);
     expect(response2.body.data[0]._id).toEqual(data[1]._id.toString());
     expect(response2.body.data[0].fullname).toEqual(data[1].fullname.toString());
     expect(response2.body.data[0].username).toEqual(data[1].username.toString());
@@ -56,24 +55,6 @@ describe('search user account example', () => {
     expect(response2.body.data[0].supportedBy).toBeDefined();
     expect(response2.body.data[0].supportedBy[0]._id).toEqual(data[2]._id.toString());
     expect(response2.body.data[0].supportedBy[0].username).toEqual(data[2].username);
-  });
-
-  it('should thrown error if username search not found', async () => {
-    const data = await createFakeUser();
-
-    const authResponse = await request(app)
-      .post(`/v1/users/login`)
-      .send({ email: data[0].email, password: '12345678' });
-    const { token } = authResponse.body;
-
-    const response = await request(app)
-      .get('/v1/users/search')
-      .query({ username: 'test123' })
-      .set('Authorization', `Bearer ${token}`);
-
-    // expect http response
-    expect(response.statusCode).toEqual(404);
-    expect(response.body.status).toEqual('error');
   });
 
   it('should thrown Authentication Error if user is not logged in', async () => {

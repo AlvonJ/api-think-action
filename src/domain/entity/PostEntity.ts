@@ -6,6 +6,8 @@ export interface PostInterface {
   caption?: string;
   photo?: Array<string>;
   like?: Array<string> | string;
+  likeCount?: number;
+  commentCount?: number;
   dueDate?: Date | string;
   updatedDate?: Date | string;
   shareWith?: 'everyone' | 'supporter' | 'private';
@@ -22,6 +24,8 @@ export class PostEntity {
   caption: string;
   photo?: Array<string>;
   like?: Array<string> | string;
+  likeCount?: number;
+  commentCount?: number;
   dueDate?: Date | string;
   updatedDate?: Date | string;
   shareWith: 'everyone' | 'supporter' | 'private';
@@ -37,6 +41,8 @@ export class PostEntity {
     this.caption = post.caption;
     this.photo = post.photo;
     this.like = post.like;
+    this.likeCount = post.likeCount;
+    this.commentCount = post.commentCount;
     this.dueDate = post.dueDate;
     this.updatedDate = post.updatedDate;
     this.shareWith = post.shareWith;

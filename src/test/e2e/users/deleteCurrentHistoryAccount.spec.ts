@@ -30,12 +30,12 @@ describe('delete current history account example', () => {
     const response = await request(app).delete('/v1/users/history').set('Authorization', `Bearer ${token}`);
 
     // expect http response
-    expect(response.statusCode).toEqual(201);
+    expect(response.statusCode).toEqual(204);
     expect(response.body).toStrictEqual({});
 
     // check if history account is deleted
     const response2 = await request(app).get(`/v1/users/history`).set('Authorization', `Bearer ${token}`);
-    expect(response2.body.results).toEqual(0);
+    expect(response2.body.results).toBeUndefined();
   });
 
   it('should thrown Authentication Error if user is not logged in', async () => {

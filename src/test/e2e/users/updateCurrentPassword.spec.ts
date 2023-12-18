@@ -38,19 +38,21 @@ describe('update current user password example', () => {
     // expect http response
     expect(response.statusCode).toEqual(200);
     expect(response.body.status).toEqual('success');
-    expect(response.body.message).toBeDefined();
+    expect(response.body.token).toBeDefined();
   });
 
   it('should thrown error if current password is wrong', async () => {
     const user = await createFakeUser();
 
-    const loginResponse = await request(app).post('/users/login').send({ email: user[0].email, password: '12345678' });
+    const loginResponse = await request(app)
+      .post('/v1/users/login')
+      .send({ email: user[0].email, password: '12345678' });
     const { token } = loginResponse.body;
 
     const response = await request(app)
       .patch('/v1/users/updateMyPassword')
       .send({
-        passwordCurrent: '1234567',
+        passwordCurrent: '12345678910',
         passwordNew: '123456',
       })
       .set('Authorization', `Bearer ${token}`);

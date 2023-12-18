@@ -18,6 +18,10 @@ export interface UserInterface {
   supporting?: Array<string> | string;
   request?: Array<string> | string;
   notification?: Array<string> | string;
+  supporterCount?: number;
+  supportingCount?: number;
+  requestCount?: number;
+  notificationCount?: number;
   categoryResolution?: Array<CategoryResolutionInterface>;
   historyAccount?: Array<string>;
   isPublic?: boolean;
@@ -36,6 +40,10 @@ export class UserEntity {
   supporting?: Array<string> | string;
   request?: Array<string> | string;
   notification?: Array<string> | string;
+  supporterCount?: number;
+  supportingCount?: number;
+  requestCount?: number;
+  notificationCount?: number;
   categoryResolution?: Array<CategoryResolutionInterface>;
   historyAccount?: Array<string>;
   isPublic?: boolean;
@@ -53,6 +61,10 @@ export class UserEntity {
     this.supporting = user.supporting;
     this.request = user.request;
     this.notification = user.notification;
+    this.supporterCount = user.supporterCount;
+    this.supportingCount = user.supportingCount;
+    this.requestCount = user.requestCount;
+    this.notificationCount = user.notificationCount;
     this.historyAccount = user.historyAccount;
     this.categoryResolution = user.categoryResolution;
     this.isPublic = user.isPublic || true;
@@ -69,6 +81,10 @@ export class UserEntity {
     this.validateSupporting();
     this.validateRequest();
     this.validateNotification();
+    this.validateSupporterCount();
+    this.validateSupportingCount();
+    this.validateRequestCount();
+    this.validateNotificationCount();
     this.validateCategoryResolution();
     this.validateHistoryAccount();
   }
@@ -114,6 +130,12 @@ export class UserEntity {
     // If password is null
     if (!this.password || typeof this.password !== 'string' || this.password.trim() === '') {
       throw new Error('Invalid Password. Password field must be non-empty string', { cause: 'ValidationError' });
+    }
+
+    if (this.password.length <= 5) {
+      throw new Error('Invalid Password. Password must be longer than 5 characters', {
+        cause: 'ValidationError',
+      });
     }
   }
 
@@ -188,6 +210,70 @@ export class UserEntity {
       )
     ) {
       throw new Error('Invalid Notification. Notification must be an array of strings or string', {
+        cause: 'ValidationError',
+      });
+    }
+  }
+
+  private validateSupportingCount() {
+    if (!this.supportingCount) return;
+
+    if (typeof this.supportingCount !== 'number') {
+      throw new Error('Invalid Supporting Count. Supporting Count must be a number', {
+        cause: 'ValidationError',
+      });
+    }
+
+    if (this.supportingCount < 0) {
+      throw new Error('Invalid Supporting Count. Supporting Count must be a positive number', {
+        cause: 'ValidationError',
+      });
+    }
+  }
+
+  private validateSupporterCount() {
+    if (!this.supporterCount) return;
+
+    if (typeof this.supporterCount !== 'number') {
+      throw new Error('Invalid Supporter Count. Supporter Count must be a number', {
+        cause: 'ValidationError',
+      });
+    }
+
+    if (this.supporterCount < 0) {
+      throw new Error('Invalid Supporter Count. Supporter Count must be a positive number', {
+        cause: 'ValidationError',
+      });
+    }
+  }
+
+  private validateNotificationCount() {
+    if (!this.notificationCount) return;
+
+    if (typeof this.notificationCount !== 'number') {
+      throw new Error('Invalid Notification Count. Notification Count must be a number', {
+        cause: 'ValidationError',
+      });
+    }
+
+    if (this.notificationCount < 0) {
+      throw new Error('Invalid Notification Count. Notification Count must be a positive number', {
+        cause: 'ValidationError',
+      });
+    }
+  }
+
+  private validateRequestCount() {
+    if (!this.requestCount) return;
+
+    if (typeof this.requestCount !== 'number') {
+      throw new Error('Invalid Request Count. Request Count must be a number', {
+        cause: 'ValidationError',
+      });
+    }
+
+    if (this.requestCount < 0) {
+      throw new Error('Invalid Request Count. Request Count must be a positive number', {
         cause: 'ValidationError',
       });
     }

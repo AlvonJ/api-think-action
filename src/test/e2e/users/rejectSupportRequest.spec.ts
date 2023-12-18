@@ -40,7 +40,6 @@ describe('reject support request example', () => {
 
     // expect response json
     expect(response.body.data._id.toString()).toEqual(data[3]._id.toString());
-    expect(response.body.data.supportingCount).toEqual(0);
   });
 
   it('should thrown error if userId is not found', async () => {

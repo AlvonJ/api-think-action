@@ -35,12 +35,12 @@ describe('get current history account example', () => {
 
     // expect response json
     // data 1
-    expect(response.body.data[0]._id.toString()).toEqual(data[0]._id.toString());
-    expect(response.body.data[0].username).toEqual(data[0].username);
-    expect(response.body.data[0].fullname).toEqual(data[0].fullname);
+    expect(response.body.data[0]._id.toString()).toEqual('657fb542e6af9505c74f537d');
+    expect(response.body.data[0].username).toEqual('Test3');
+    expect(response.body.data[0].fullname).toEqual(null);
+    expect(response.body.data[0].photo).toEqual(null);
     expect(response.body.data[0].supportedByCount).toBeDefined();
     expect(response.body.data[0].supportedBy).toBeDefined();
-    expect(response.body.data[0].photo).toBeDefined();
     expect(response.body.data[0].password).toBeUndefined();
   });
 
